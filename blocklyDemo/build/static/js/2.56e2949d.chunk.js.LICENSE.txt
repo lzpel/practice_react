@@ -4,6 +4,18 @@ object-assign
 @license MIT
 */
 
+/**
+   * @license
+   * Copyright 2019 Google LLC
+   * SPDX-License-Identifier: Apache-2.0
+   */
+
+/**
+   * @license
+   * Copyright 2020 Google LLC
+   * SPDX-License-Identifier: Apache-2.0
+   */
+
 /** @license React v0.20.2
  * scheduler.production.min.js
  *

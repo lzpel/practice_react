@@ -1,25 +1,30 @@
+import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Blockly from 'blockly';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    React.useEffect(() => {
+        Blockly.inject('blocklyDiv', {
+            toolbox: document.getElementById('toolbox')
+        });
+    });
+    return (
+        <div className="App">
+            <h1>blockly demo</h1>
+            <div id="blocklyDiv" style={{height: "480px", width: "600px"}}></div>
+            <xml id="toolbox" style={{display: "none"}}>
+                <block type="controls_if"></block>
+                <block type="controls_repeat_ext"></block>
+                <block type="logic_compare"></block>
+                <block type="math_number"></block>
+                <block type="math_arithmetic"></block>
+                <block type="text"></block>
+                <block type="text_print"></block>
+            </xml>
+        </div>
+    );
 }
 
 export default App;
