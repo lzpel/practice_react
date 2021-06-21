@@ -2,84 +2,117 @@ import React from 'react';
 import './App.css';
 import Blockly from 'blockly';
 
-let blocklyArea, blocklyDiv, workSpace
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {code: ''};
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleResize = this.handleResize.bind(this);
 
-Blockly.Blocks['string_length'] = {
-    init: function () {
-        this.jsonInit({
-            "message0": '%1 の長さ',
-            "args0": [
-                {
-                    "type": "input_value",
-                    "name": "VALUE",
-                    "check": "String"
-                }
-            ],
-            "output": "Number",
-            "colour": 160,
-            "tooltip": "Returns number of letters in the provided text.",
-            "helpUrl": "https://www.w3schools.com/jsref/jsref_length_string.asp"
+        Blockly.Blocks['string_length'] = {
+            init: function () {
+                this.jsonInit({
+                    "message0": '%1 の長さ',
+                    "args0": [
+                        {
+                            "type": "input_value",
+                            "name": "VALUE",
+                            "check": "String"
+                        }
+                    ],
+                    "output": "Number",
+                    "colour": 160,
+                    "tooltip": "Returns number of letters in the provided text.",
+                    "helpUrl": "https://www.w3schools.com/jsref/jsref_length_string.asp"
+                });
+            }
+        };
+        Blockly.JavaScript['string_length'] = function(block) {
+            // String or array length.
+            console.log(block)
+            let argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'\'';
+            return [argument0 + '.length', Blockly.JavaScript.ORDER_MEMBER];
+        };
+    }
+
+    handleChange() {
+
+    }
+
+    handleSubmit() {
+        console.log("hello")
+        Blockly.JavaScript.addReservedWords('code');
+        this.setState({
+            code: Blockly.JavaScript.workspaceToCode(this.workSpace)
         });
     }
-};
 
-function onresize(e) {
-    blocklyArea = document.getElementById('blocklyArea')
-    // Compute the absolute coordinates and dimensions of blocklyArea.
-    let element = blocklyArea;
-    let x = 0;
-    let y = 0;
-    do {
-        x += element.offsetLeft;
-        y += element.offsetTop;
-        element = element.offsetParent;
-    } while (element);
-    // Position blocklyDiv over blocklyArea.
-    blocklyDiv.style.left = x + 'px';
-    blocklyDiv.style.top = y + 'px';
-    blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
-    blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
-    Blockly.svgResize(workSpace);
-}
+    handleResize(e) {
+        // this.blocklyArea = document.getElementById('blocklyArea')
+        // Compute the absolute coordinates and dimensions of blocklyArea.
+        let element = this.blocklyArea;
+        let x = 0;
+        let y = 0;
+        do {
+            x += element.offsetLeft;
+            y += element.offsetTop;
+            element = element.offsetParent;
+        } while (element);
+        // Position blocklyDiv over blocklyArea.
+        this.blocklyDiv.style.left = x + 'px';
+        this.blocklyDiv.style.top = y + 'px';
+        this.blocklyDiv.style.width = this.blocklyArea.offsetWidth + 'px';
+        this.blocklyDiv.style.height = this.blocklyArea.offsetHeight + 'px';
+        Blockly.svgResize(this.workSpace);
+    }
 
-function App() {
-    React.useEffect(() => {
-        blocklyArea = document.getElementById('blocklyArea');
-        blocklyDiv = document.getElementById('blocklyDiv');
-        workSpace = Blockly.inject('blocklyDiv', {
+    componentDidMount() {
+        this.blocklyArea = document.getElementById('blocklyArea');
+        this.blocklyDiv = document.getElementById('blocklyDiv');
+        this.workSpace = Blockly.inject('blocklyDiv', {
             toolbox: document.getElementById('toolbox')
         });
-    });
-    React.useEffect(() => {
-        window.addEventListener('resize', onresize, false);
-        onresize();
-        Blockly.svgResize(workSpace);
-    }, []);
-    return (
-        <div className="App">
-            <h1>blockly demo</h1>
-            <table style={{width: "100%"}}>
-                <tr>
-                    <td id="blocklyArea" style={{height: "600px"}}></td>
-                </tr>
-            </table>
-            <div id="blocklyDiv" style={{position: "absolute"}}></div>
-            <xml id="toolbox" style={{display: "none"}}>
-                <category name="既存部品">
-                    <block type="controls_if"></block>
-                    <block type="controls_repeat_ext"></block>
-                    <block type="logic_compare"></block>
-                    <block type="math_number"></block>
-                    <block type="math_arithmetic"></block>
-                    <block type="text"></block>
-                    <block type="text_print"></block>
-                </category>
-                <category name="カスタム部品">
-                    <block type="string_length"></block>
-                </category>
-            </xml>
-        </div>
-    );
+        window.addEventListener('resize', this.handleResize, false);
+        this.handleResize();
+        Blockly.svgResize(this.workSpace);
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <h1>blockly demo</h1>
+                <table style={{width: "100%"}}>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <button onClick={this.handleSubmit}>js</button>
+                            {this.state.code}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="blocklyArea" style={{height: "600px"}}></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div id="blocklyDiv" style={{position: "absolute"}}></div>
+                <xml id="toolbox" style={{display: "none"}}>
+                    <category name="既存部品">
+                        <block type="controls_if"></block>
+                        <block type="controls_repeat_ext"></block>
+                        <block type="logic_compare"></block>
+                        <block type="math_number"></block>
+                        <block type="math_arithmetic"></block>
+                        <block type="text"></block>
+                        <block type="text_print"></block>
+                    </category>
+                    <category name="カスタム部品">
+                        <block type="string_length"></block>
+                    </category>
+                </xml>
+            </div>
+        );
+    }
 }
 
 export default App;
