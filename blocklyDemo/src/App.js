@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Blockly from 'blockly';
+import Python from 'blockly/python';
 
 class App extends React.Component {
     constructor(props) {
@@ -28,11 +29,11 @@ class App extends React.Component {
                 });
             }
         };
-        Blockly.JavaScript['string_length'] = function(block) {
-            // String or array length.
+        Python.addReservedWords('code');
+        Python['string_length'] = function(block) {
             console.log(block)
-            let argument0 = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_FUNCTION_CALL) || '\'\'';
-            return [argument0 + '.length', Blockly.JavaScript.ORDER_MEMBER];
+            let argument0 = Python.valueToCode(block, 'VALUE', Python.ORDER_FUNCTION_CALL) || '\'\'';
+            return ["len(" + argument0 + ')', Python.ORDER_MEMBER];
         };
     }
 
@@ -42,9 +43,8 @@ class App extends React.Component {
 
     handleSubmit() {
         console.log("hello")
-        Blockly.JavaScript.addReservedWords('code');
         this.setState({
-            code: Blockly.JavaScript.workspaceToCode(this.workSpace)
+            code: Python.workspaceToCode(this.workSpace)
         });
     }
 
@@ -86,7 +86,7 @@ class App extends React.Component {
                     <tbody>
                     <tr>
                         <td>
-                            <button onClick={this.handleSubmit}>js</button>
+                            <button onClick={this.handleSubmit}>Generate python</button>
                             {this.state.code}
                         </td>
                     </tr>
