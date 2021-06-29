@@ -29,12 +29,31 @@ class App extends React.Component {
                 });
             }
         };
-        Python.addReservedWords('code');
-        Python['string_length'] = function(block) {
+        Blockly.Blocks['import'] = {
+            init: function () {
+                this.setNextStatement(true);
+                this.setPreviousStatement(true);
+                this.setOutput(false);
+                this.setColour(100);
+                this.setTooltip('import module, eg. import request.');
+                this.appendDummyInput()
+                    .appendField("import")
+                    .appendField(new Blockly.FieldTextInput(''), 'FIELDNAME');
+                Python['import'] = function (block) {
+                    let argument0 = block.getFieldValue('FIELDNAME')
+                    if (argument0) {
+                        return "import " + argument0
+                    }
+                    return ""
+                };
+            }
+        };
+        Python['string_length'] = function (block) {
             console.log(block)
             let argument0 = Python.valueToCode(block, 'VALUE', Python.ORDER_FUNCTION_CALL) || '\'\'';
             return ["len(" + argument0 + ')', Python.ORDER_MEMBER];
         };
+        Python.addReservedWords('code');
     }
 
     handleChange() {
@@ -108,6 +127,7 @@ class App extends React.Component {
                     </category>
                     <category name="カスタム部品">
                         <block type="string_length"></block>
+                        <block type="import"></block>
                     </category>
                 </xml>
             </div>
