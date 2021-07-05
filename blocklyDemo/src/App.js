@@ -41,10 +41,7 @@ class App extends React.Component {
                     .appendField(new Blockly.FieldTextInput(''), 'FIELDNAME');
                 Python['import'] = function (block) {
                     let argument0 = block.getFieldValue('FIELDNAME')
-                    if (argument0) {
-                        return "import " + argument0
-                    }
-                    return ""
+                    return "import " + argument0 + "\n"
                 };
             }
         };
@@ -65,6 +62,7 @@ class App extends React.Component {
         this.setState({
             code: Python.workspaceToCode(this.workSpace)
         });
+        this.handleResize(null)
     }
 
     handleResize(e) {
@@ -98,6 +96,9 @@ class App extends React.Component {
     }
 
     render() {
+        const lines = this.state.code.split("\n").map((line) =>
+            <p>{line}</p>
+        );
         return (
             <div className="App">
                 <h1>blockly demo</h1>
@@ -106,7 +107,7 @@ class App extends React.Component {
                     <tr>
                         <td>
                             <button onClick={this.handleSubmit}>Generate python</button>
-                            {this.state.code}
+                            {lines}
                         </td>
                     </tr>
                     <tr>
