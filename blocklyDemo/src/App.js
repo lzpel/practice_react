@@ -1,7 +1,8 @@
 import React from 'react';
-import './App.css';
 import Blockly from 'blockly';
 import Python from 'blockly/python';
+import loadScript from './loadScript';
+import './App.css';
 
 class App extends React.Component {
     constructor(props) {
@@ -10,47 +11,7 @@ class App extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleResize = this.handleResize.bind(this);
-
-        Blockly.Blocks['string_length'] = {
-            init: function () {
-                this.jsonInit({
-                    "message0": '%1 の長さ',
-                    "args0": [
-                        {
-                            "type": "input_value",
-                            "name": "VALUE",
-                            "check": "String"
-                        }
-                    ],
-                    "output": "Number",
-                    "colour": 160,
-                    "tooltip": "Returns number of letters in the provided text.",
-                    "helpUrl": "https://www.w3schools.com/jsref/jsref_length_string.asp"
-                });
-            }
-        };
-        Blockly.Blocks['import'] = {
-            init: function () {
-                this.setNextStatement(true);
-                this.setPreviousStatement(true);
-                this.setOutput(false);
-                this.setColour(100);
-                this.setTooltip('import module, eg. import request.');
-                this.appendDummyInput()
-                    .appendField("import")
-                    .appendField(new Blockly.FieldTextInput(''), 'FIELDNAME');
-                Python['import'] = function (block) {
-                    let argument0 = block.getFieldValue('FIELDNAME')
-                    return "import " + argument0 + "\n"
-                };
-            }
-        };
-        Python['string_length'] = function (block) {
-            console.log(block)
-            let argument0 = Python.valueToCode(block, 'VALUE', Python.ORDER_FUNCTION_CALL) || '\'\'';
-            return ["len(" + argument0 + ')', Python.ORDER_MEMBER];
-        };
-        Python.addReservedWords('code');
+        loadScript(Blockly,Python)
     }
 
     handleChange() {
