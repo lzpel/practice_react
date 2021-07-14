@@ -11,7 +11,6 @@ class App extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleResize = this.handleResize.bind(this);
-        loadScript(Blockly,Python,document.getElementById('custombox'))
     }
 
     handleChange(primaryEvent) {
@@ -54,7 +53,9 @@ class App extends React.Component {
             toolbox: document.getElementById('toolbox')
         });
 
-        // 変更即コード
+        // カスタムブロック
+        loadScript(Blockly, Python, this.workSpace)
+        // 変更即反映
         this.workSpace.addChangeListener(this.handleChange)
 
         window.addEventListener('resize', this.handleResize, false);
@@ -82,21 +83,6 @@ class App extends React.Component {
                     </tbody>
                 </table>
                 <div id="blocklyDiv" style={{position: "absolute"}}></div>
-                <xml id="toolbox" style={{display: "none"}}>
-                    <category name="既存部品">
-                        <block type="controls_if"></block>
-                        <block type="controls_repeat_ext"></block>
-                        <block type="logic_compare"></block>
-                        <block type="math_number"></block>
-                        <block type="math_arithmetic"></block>
-                        <block type="text"></block>
-                        <block type="text_print"></block>
-                    </category>
-                    <category name="カスタム部品" id="custombox">
-                        <block type="string_length"></block>
-                        <block type="import"></block>
-                    </category>
-                </xml>
             </div>
         );
     }

@@ -1,13 +1,16 @@
 
 const text=`
-import math
+import math,time
 
 def str_cos(int_x,str_y):
     return str(math.cos(int_x))+str_y
     
+def none_sleep(int_sec):
+    time.sleep
+
 print(sin(1,"aiueo"))
 `
-function loadScript2(Blockly, Python, Xml, Script) {
+function loadScript2(Blockly, Python, WorkSpace, Script) {
     let funcRe = /^def\s+([\w\s,()]+)/gm, funcParts;
     while ((funcParts = funcRe.exec(Script)) !== null) {
         let args=[], argsRe=/\w+/g, argsArray
@@ -30,18 +33,20 @@ function loadScript2(Blockly, Python, Xml, Script) {
                 this.setColour(100);
                 this.setTooltip('import module, eg. import request.');
                 this.appendDummyInput()
-                    .appendField("sleep")
+                    .appendField(this.args[0][1])
                     .appendField(new Blockly.FieldNumber(''), 'FIELDNAME');
             }
         }
         Python[args[0][1]] = function (block) {
             let argument0 = block.getFieldValue('FIELDNAME')
-            return "time.sleep(" + argument0 + ")\n"
-        };
+            return args[0][1]+"(" + argument0 + ")\n"
+        }.bind(args);
+        console.log(WorkSpace)
+        //console.log(new Blockly.ToolboxItem({kind:Blockly.utils.toolbox.FLYOUT_TOOLBOX_KIND,type:args[0][1]}, WorkSpace.getToolbox(), null))
     }
 }
-export default function loadScript(Blockly, Python, Xml){
-    loadScript2(Blockly, Python, Xml, text)
+export default function loadScript(Blockly, Python, WorkSpace){
+    loadScript2(Blockly, Python, WorkSpace, text)
     Blockly.Blocks['string_length'] = {
         init: function () {
             this.jsonInit({
