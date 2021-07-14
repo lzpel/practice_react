@@ -11,19 +11,21 @@ class App extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleResize = this.handleResize.bind(this);
-        loadScript(Blockly,Python)
+        loadScript(Blockly,Python,document.getElementById('custombox'))
     }
 
-    handleChange() {
-
-    }
-
-    handleSubmit() {
-        console.log("hello")
+    handleChange(primaryEvent) {
+        if (primaryEvent instanceof Blockly.Events.Ui) {
+            return;  // Don't mirror UI events.
+        }
         this.setState({
             code: Python.workspaceToCode(this.workSpace)
         });
         this.handleResize(null)
+    }
+
+    handleSubmit() {
+        console.log("hello")
     }
 
     handleResize(e) {
@@ -51,6 +53,10 @@ class App extends React.Component {
         this.workSpace = Blockly.inject('blocklyDiv', {
             toolbox: document.getElementById('toolbox')
         });
+
+        // 変更即コード
+        this.workSpace.addChangeListener(this.handleChange)
+
         window.addEventListener('resize', this.handleResize, false);
         this.handleResize();
         Blockly.svgResize(this.workSpace);
@@ -58,7 +64,7 @@ class App extends React.Component {
 
     render() {
         const lines = this.state.code.split("\n").map((line) =>
-            <p>{line}</p>
+            <p key={line}>{line}</p>
         );
         return (
             <div className="App">
@@ -67,7 +73,6 @@ class App extends React.Component {
                     <tbody>
                     <tr>
                         <td>
-                            <button onClick={this.handleSubmit}>Generate python</button>
                             {lines}
                         </td>
                     </tr>
@@ -87,7 +92,7 @@ class App extends React.Component {
                         <block type="text"></block>
                         <block type="text_print"></block>
                     </category>
-                    <category name="カスタム部品">
+                    <category name="カスタム部品" id="custombox">
                         <block type="string_length"></block>
                         <block type="import"></block>
                     </category>

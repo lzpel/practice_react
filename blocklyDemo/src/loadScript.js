@@ -2,33 +2,46 @@
 const text=`
 import math
 
-def str_sin2(int_x,str_y):
-    return str(math.sin(int_x))+str_y
-
 def str_cos(int_x,str_y):
     return str(math.cos(int_x))+str_y
     
 print(sin(1,"aiueo"))
 `
-function loadScript2(Blockly, Python, Script) {
-    let myRe = /^def\s+([\w\s,()]+)/gm;
-    let myArray;
-    while ((myArray = myRe.exec(Script)) !== null) {
-        let funcPart=myArray[0], argsPart=myArray[1]
-        let args=[], argsRe=/\w+/, argsArray
-        while ((argsArray = argsRe.exec(argsPart)) !== null) {
+function loadScript2(Blockly, Python, Xml, Script) {
+    let funcRe = /^def\s+([\w\s,()]+)/gm, funcParts;
+    while ((funcParts = funcRe.exec(Script)) !== null) {
+        let args=[], argsRe=/\w+/g, argsArray
+        while ((argsArray = argsRe.exec(funcParts[1])) !== null) {
             let arg=argsArray[0]
             let parts=arg.split("_")
-            if(parts.length!==2){
-                console.log("無効な識別子",arg,"in",funcPart)
+            if(parts.length<2){
+                console.log("無効な識別子",arg,"in",funcParts[0])
                 return
             }
-            console.log(parts[0],parts[1])
+            args.push(parts)
         }
+        Blockly.Blocks[args[0][1]] = {
+            args: args,
+            init: function () {
+                console.log(this.args);
+                this.setNextStatement(true);
+                this.setPreviousStatement(true);
+                this.setOutput(false);
+                this.setColour(100);
+                this.setTooltip('import module, eg. import request.');
+                this.appendDummyInput()
+                    .appendField("sleep")
+                    .appendField(new Blockly.FieldNumber(''), 'FIELDNAME');
+            }
+        }
+        Python[args[0][1]] = function (block) {
+            let argument0 = block.getFieldValue('FIELDNAME')
+            return "time.sleep(" + argument0 + ")\n"
+        };
     }
 }
-export default function loadScript(Blockly, Python){
-    loadScript2(Blockly, Python, text)
+export default function loadScript(Blockly, Python, Xml){
+    loadScript2(Blockly, Python, Xml, text)
     Blockly.Blocks['string_length'] = {
         init: function () {
             this.jsonInit({
