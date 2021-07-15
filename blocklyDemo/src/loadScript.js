@@ -70,6 +70,30 @@ export default function loadScript(Blockly, Python, WorkSpace){
             };
         }
     };
+    Blockly.Blocks['env'] = {
+        init: function () {
+            this.setOutput(true,"String");
+            this.appendDummyInput().appendField("環境変数 $").appendField(new Blockly.FieldTextInput(''), 'FIELDNAME');
+            Python['env'] = function (block) {
+                let argument0 = block.getFieldValue('FIELDNAME')
+                return "os.environ.get('" + argument0 + "')\n"
+            };
+        }
+    };
+    Blockly.Blocks['argv'] = {
+        init: function () {
+            this.setOutput(true,["String","Number"]);
+            this.appendDummyInput().appendField("実行時変数").appendField(new Blockly.FieldDropdown([
+                ['総数', 'len(sys.argv)'],
+                ['0番目', 'sys.argv[0]'],
+                ['1番目', 'sys.argv[1]'],
+                ['2番目', 'sys.argv[2]'],
+            ]), 'FIELDNAME');
+            Python['argv'] = function (block) {
+                return block.getFieldValue('FIELDNAME')
+            };
+        }
+    };
     Blockly.Blocks['import'] = {
         init: function () {
             this.setNextStatement(true);
