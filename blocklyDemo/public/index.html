@@ -427,11 +427,15 @@
             <field name="MODE">GET</field>
             <field name="WHERE">FIRST</field>
         </block>
-      <block type="curl">
-          <field name="HOST">localhost</field>
-          <field name="PORT">8080</field>
-          <field name="PATH">index.html</field>
-      </block>
+        <block type="text_print">
+            <value name="TEXT">
+                <block type="curl">
+                    <field name="HOST">httpbin.org</field>
+                    <field name="PORT">80</field>
+                    <field name="PATH">get</field>
+                </block>
+            </value>
+        </block>
     </category>
 </xml>
 </body>
