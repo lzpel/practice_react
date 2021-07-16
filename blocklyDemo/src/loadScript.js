@@ -55,8 +55,7 @@ export default function loadScript(Blockly, Python, WorkSpace){
             "style": "text_blocks",
             "args0": [{
                 "type": "field_input",
-                "name": "TEXT",
-                "text": "PATH"
+                "name": "NAME",
             }],
             "extensions": [
                 "text_quotes",
@@ -68,31 +67,53 @@ export default function loadScript(Blockly, Python, WorkSpace){
             "message0": "[実行時引数]",
             "output": "Array",
             "style": "list_blocks",
-        },
-        {
+        },{
             "type": "curl",
-            "message0": "curl %1",
-            "output": "String",
-            "style": "procedure_blocks",
+            "message0": "curl http://%1:%2/%3",
+            "output": "Array",
+            "style":"procedure_blocks",
             "args0": [
                 {
-                    "type": "input_value",
-                    "name": "URL",
-                    "check": ["String"]
-                }
-            ],
-        },
+                    "type": "field_input",
+                    "name": "HOST",
+                },
+                {
+                    "type": "field_number",
+                    "name": "PORT",
+                    "value": 80,
+                    "min": 0,
+                    "max": 65535,
+                },
+                {
+                    "type": "field_input",
+                    "name": "PATH",
+                },
+            ]
+        }
     ])
     Python['env'] = function (block) {
-        return ["os.environ.get('" + block.getFieldValue('TEXT') + "')", Blockly.Python.ORDER_ATOMIC]
+        Python.definitions_["os"]="import os"
+        return ["os.environ.get('" + block.getFieldValue('NAME') + "')", Blockly.Python.ORDER_ATOMIC]
     };
     Python['argv'] = function (block) {
+        Python.definitions_["sys"]="import sys"
         return ["sys.argv", Blockly.Python.ORDER_ATOMIC]
     };
     Python['curl'] = function (block) {
-        let url=Blockly.Python.valueToCode(block, 'URL', Blockly.Python.ORDER_NONE) || '';
-        let code="urllib.request.urlopen("+url+")"
-        return [code, Blockly.Python.ORDER_ATOMIC]
+        Python.definitions_["urllib"]="import urllib"
+        Python.definitions_["curl"]=`
+        def curl(host,port,path):
+            with urllib.request.urlopen("http://{}:{}/{}".format(host,port,path)) as res:
+                return (res.code, res.read())
+            except urllib.error.HTTPError as res:
+                return (res.code, res.read())
+            except urllib.error.URLError as err:
+                return (0, err.reason)
+        `
+        let host=block.getFieldValue('HOST')
+        let port=block.getFieldValue('PORT')
+        let path=block.getFieldValue('PATH')
+        return [`curl("${host}",${port},"${path}")`, Blockly.Python.ORDER_ATOMIC]
     };
     Python.addReservedWords('code');
 }

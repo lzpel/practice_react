@@ -417,7 +417,9 @@
         </category>
     </category>
     <category name="Job" colour="red">
-        <block type="env"></block>
+        <block type="env">
+            <field name="NAME">PATH</field>
+        </block>
         <block type="lists_getIndex">
             <value name="VALUE">
                 <block type="argv"></block>
@@ -425,7 +427,11 @@
             <field name="MODE">GET</field>
             <field name="WHERE">FIRST</field>
         </block>
-      <block type="curl"></block>
+      <block type="curl">
+          <field name="HOST">localhost</field>
+          <field name="PORT">8080</field>
+          <field name="PATH">index.html</field>
+      </block>
     </category>
 </xml>
 </body>

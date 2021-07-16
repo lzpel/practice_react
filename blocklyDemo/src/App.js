@@ -64,21 +64,24 @@ class App extends React.Component {
     }
 
     render() {
-        const lines = this.state.code.split("\n").map((line) =>
-            <p key={line}>{line}</p>
-        );
+        const lines = this.state.code.split("\n").map(function(item, idx) {
+            return (
+                <span key={idx}>
+                {item}
+                    <br/>
+            </span>
+            )
+        })
         return (
             <div className="App">
                 <h1>blockly demo</h1>
                 <table style={{width: "100%"}}>
                     <tbody>
                     <tr>
-                        <td>
+                        <td id="blocklyArea" style={{height: "600px",width:"50%"}}></td>
+                        <td style={{height: "600px",width:"50%",textAlign:"left"}}>
                             {lines}
                         </td>
-                    </tr>
-                    <tr>
-                        <td id="blocklyArea" style={{height: "600px"}}></td>
                     </tr>
                     </tbody>
                 </table>
