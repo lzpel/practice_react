@@ -430,9 +430,21 @@
         <block type="text_print">
             <value name="TEXT">
                 <block type="curl">
-                    <field name="HOST">httpbin.org</field>
-                    <field name="PORT">80</field>
-                    <field name="PATH">get</field>
+                    <value name="HOST">
+                        <block type="text">
+                            <field name="TEXT">httpbin.org</field>
+                        </block>
+                    </value>
+                    <value name="PORT">
+                        <block type="math_number">
+                            <field name="NUM">80</field>
+                        </block>
+                    </value>
+                    <value name="PATH">
+                        <block type="text">
+                            <field name="TEXT">get</field>
+                        </block>
+                    </value>
                 </block>
             </value>
         </block>

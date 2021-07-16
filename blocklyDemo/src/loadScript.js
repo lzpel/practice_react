@@ -69,24 +69,24 @@ export default function loadScript(Blockly, Python, WorkSpace){
             "style": "list_blocks",
         },{
             "type": "curl",
-            "message0": "curl http://%1:%2/%3",
+            "message0": "PORT:%2 http://%1\n/%3",
             "output": "Array",
             "style":"procedure_blocks",
             "args0": [
                 {
-                    "type": "field_input",
+                    "type": "input_value",
                     "name": "HOST",
+                    "check": "String",
                 },
                 {
-                    "type": "field_number",
+                    "type": "input_value",
                     "name": "PORT",
-                    "value": 80,
-                    "min": 0,
-                    "max": 65535,
+                    "check": "Number",
                 },
                 {
-                    "type": "field_input",
+                    "type": "input_value",
                     "name": "PATH",
+                    "check": "String",
                 },
             ]
         }
@@ -110,10 +110,13 @@ export default function loadScript(Blockly, Python, WorkSpace){
         return (res.code, res.read())
     except urllib.error.URLError as err:
         return (0, err.reason)`
-        let host=block.getFieldValue('HOST')
-        let port=block.getFieldValue('PORT')
-        let path=block.getFieldValue('PATH')
-        return [`curl("${host}",${port},"${path}")`, Blockly.Python.ORDER_ATOMIC]
+        let host=Blockly.Python.valueToCode(block, 'HOST',
+            Blockly.Python.ORDER_NONE) || '\'\'';
+        let port=Blockly.Python.valueToCode(block, 'PORT',
+            Blockly.Python.ORDER_NONE) || '0';
+        let path=Blockly.Python.valueToCode(block, 'PATH',
+            Blockly.Python.ORDER_NONE) || '\'\'';
+        return [`curl(${host},${port},${path})`, Blockly.Python.ORDER_ATOMIC]
     };
     Python.addReservedWords('code');
 }
