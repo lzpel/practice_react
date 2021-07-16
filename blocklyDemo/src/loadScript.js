@@ -103,8 +103,9 @@ export default function loadScript(Blockly, Python, WorkSpace){
         Python.definitions_["urllib"]="import urllib"
         Python.definitions_["curl"]=
 `def curl(host,port,path):
-    with urllib.request.urlopen("http://{}:{}/{}".format(host,port,path)) as res:
-        return (res.code, res.read())
+    try:
+        with urllib.request.urlopen("http://{}:{}/{}".format(host,port,path)) as res:
+            return (res.code, res.read())
     except urllib.error.HTTPError as res:
         return (res.code, res.read())
     except urllib.error.URLError as err:
