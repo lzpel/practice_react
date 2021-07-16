@@ -66,10 +66,7 @@ class App extends React.Component {
     render() {
         const lines = this.state.code.split("\n").map(function(item, idx) {
             return (
-                <span key={idx}>
-                {item}
-                    <br/>
-            </span>
+                <span key={idx}>{item}<br/></span>
             )
         })
         return (
@@ -79,8 +76,8 @@ class App extends React.Component {
                     <tbody>
                     <tr>
                         <td id="blocklyArea" style={{height: "600px",width:"50%"}}></td>
-                        <td style={{height: "600px",width:"50%",textAlign:"left"}}>
-                            {lines}
+                        <td>
+                            <textarea value={this.state.code} style={{height: "600px",width:"100%"}}/>
                         </td>
                     </tr>
                     </tbody>
