@@ -46,69 +46,53 @@ function loadScript2(Blockly, Python, WorkSpace, Script) {
     }
 }
 export default function loadScript(Blockly, Python, WorkSpace){
-    loadScript2(Blockly, Python, WorkSpace, text)
-    Blockly.Blocks['string_length'] = {
-        init: function () {
-            this.jsonInit({
-                "message0": '%1 の長さ',
-                "args0": [
-                    {
-                        "type": "input_value",
-                        "name": "VALUE",
-                        "check": "String"
-                    }
-                ],
-                "output": "Number",
-                "colour": 160,
-                "tooltip": "Returns number of letters in the provided text.",
-                "helpUrl": "https://www.w3schools.com/jsref/jsref_length_string.asp"
-            });
-            Python['string_length'] = function (block) {
-                console.log(block)
-                let argument0 = Python.valueToCode(block, 'VALUE', Python.ORDER_FUNCTION_CALL) || '\'\'';
-                return ["len(" + argument0 + ')', Python.ORDER_MEMBER];
-            };
-        }
+    //loadScript2(Blockly, Python, WorkSpace, text)
+    Blockly.defineBlocksWithJsonArray([
+        {
+            "type": "env",
+            "message0": "\"環境変数 %1\"",
+            "output": "String",
+            "style": "text_blocks",
+            "args0": [{
+                "type": "field_input",
+                "name": "TEXT",
+                "text": "PATH"
+            }],
+            "extensions": [
+                "text_quotes",
+                "parent_tooltip_when_inline"
+            ]
+        },
+        {
+            "type": "argv",
+            "message0": "[実行時引数]",
+            "output": "Array",
+            "style": "list_blocks",
+        },
+        {
+            "type": "curl",
+            "message0": "curl %1",
+            "output": "String",
+            "style": "procedure_blocks",
+            "args0": [
+                {
+                    "type": "input_value",
+                    "name": "URL",
+                    "check": ["String"]
+                }
+            ],
+        },
+    ])
+    Python['env'] = function (block) {
+        return ["os.environ.get('" + block.getFieldValue('TEXT') + "')", Blockly.Python.ORDER_ATOMIC]
     };
-    Blockly.Blocks['env'] = {
-        init: function () {
-            this.setOutput(true,"String");
-            this.appendDummyInput().appendField("環境変数 $").appendField(new Blockly.FieldTextInput(''), 'FIELDNAME');
-            Python['env'] = function (block) {
-                let argument0 = block.getFieldValue('FIELDNAME')
-                return "os.environ.get('" + argument0 + "')\n"
-            };
-        }
+    Python['argv'] = function (block) {
+        return ["sys.argv", Blockly.Python.ORDER_ATOMIC]
     };
-    Blockly.Blocks['argv'] = {
-        init: function () {
-            this.setOutput(true,["String","Number"]);
-            this.appendDummyInput().appendField("実行時変数").appendField(new Blockly.FieldDropdown([
-                ['総数', 'len(sys.argv)'],
-                ['0番目', 'sys.argv[0]'],
-                ['1番目', 'sys.argv[1]'],
-                ['2番目', 'sys.argv[2]'],
-            ]), 'FIELDNAME');
-            Python['argv'] = function (block) {
-                return block.getFieldValue('FIELDNAME')
-            };
-        }
-    };
-    Blockly.Blocks['import'] = {
-        init: function () {
-            this.setNextStatement(true);
-            this.setPreviousStatement(true);
-            this.setOutput(false);
-            this.setColour(100);
-            this.setTooltip('import module, eg. import request.');
-            this.appendDummyInput()
-                .appendField("import")
-                .appendField(new Blockly.FieldTextInput(''), 'FIELDNAME');
-            Python['import'] = function (block) {
-                let argument0 = block.getFieldValue('FIELDNAME')
-                return "import " + argument0 + "\n"
-            };
-        }
+    Python['curl'] = function (block) {
+        let url=Blockly.Python.valueToCode(block, 'URL', Blockly.Python.ORDER_NONE) || '';
+        let code="urllib.request.urlopen("+url+")"
+        return [code, Blockly.Python.ORDER_ATOMIC]
     };
     Python.addReservedWords('code');
 }
