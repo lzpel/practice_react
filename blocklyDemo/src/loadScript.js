@@ -100,7 +100,7 @@ export default function loadScript(Blockly, Python, WorkSpace){
         return ["sys.argv", Blockly.Python.ORDER_ATOMIC]
     };
     Python['curl'] = function (block) {
-        Python.definitions_["urllib"]="import urllib"
+        Python.definitions_["urllib"]="import urllib.request, urllib.error"
         Python.definitions_["curl"]=
 `def curl(host,port,path):
     try:
